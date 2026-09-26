@@ -380,6 +380,106 @@ namespace ConsoleApp
         }
     }
 
+    public abstract class FileRepository<T>: IRepository<T>
+    {
+        string path;
+        public FileRepository(string path)
+        {
+            this.path = path;
+        }
+        protected abstract T FromString(string line);
+        protected abstract string ToString(T item);
+
+        public void Create(T item)
+        {
+            using (StreamWriter sw = new StreamWriter(path, true))
+            {
+                sw.WriteLine(ToString(item));
+            }
+        }
+        public T Read(int id)
+        {
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    T item = FromString(line);
+                    string[] data = line.Split(',');
+
+                    if (int.Parse(data[0]) == id)
+                    {
+                        return item;
+                    }
+                }
+            }
+            return default(T);
+        }
+        
+        public List<T> ReadAll()
+        {
+            List<T> items = new List<T>();
+
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    items.Add(FromString(line));
+                }
+            }
+            return items;
+        }
+        public void Update(T item)
+        {
+            List<T> items = ReadAll();
+
+            string item_line = ToString(item);
+            string[] item_data = item_line.Split(",");
+            int item_id = int.Parse(item_data[0]);
+            for (int i = 0; i < items.Count; i++)
+            {
+                string current_line = ToString(items[i]);
+                string[] current_data = current_line.Split(",");
+                if (int.Parse(current_data[0]) == item_id)
+                {
+                    items[i] = item;
+                    break;
+                }
+            }
+
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                for (int i = 0; i < items.Count; i++)
+                {
+                    sw.WriteLine(ToString(items[i]));
+                }
+            }
+        }
+        public void Delete(int id)
+        {
+            List<T> items = ReadAll();
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                string current_line = ToString(items[i]);
+                string[] current_data = current_line.Split(",");
+                if (int.Parse(current_data[0]) == id)
+                {
+                    items.RemoveAt(i);
+                    break;
+                }
+            }
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                for (int i = 0; i < items.Count; i++)
+                {
+                    sw.WriteLine(ToString(items[i]));
+                }
+            }
+        }
+    }
+
     class Program
     {
         static void Main()
@@ -445,6 +545,21 @@ namespace ConsoleApp
             good.Name = "Milk";
             good_rep.Update(good);
 
+            List<ShopDao> shops1 = shop_rep.ReadAll();
+            for (int i = 0; i < shops1.Count; i++)
+            {
+                Console.WriteLine($"{shops1[i].Id}, {shops1[i].Name}, {shops1[i].Code}");
+            }
+            List<ClientDao> clients1 = client_rep.ReadAll();
+            for (int i = 0; i < clients1.Count; i++)
+            {
+                Console.WriteLine($"{clients1[i].Id}, {clients1[i].Surname} {clients1[i].Name}  {clients[i].Patronymic}, {clients1[i].Age}");
+            }
+            List<GoodDao> goods1 = good_rep.ReadAll();
+            for (int i = 0; i < goods1.Count; i++)
+            {
+                Console.WriteLine($"{goods1[i].Id}, {goods1[i].Name}, {goods1[i].Code}");
+            }
 
 
             shop_rep.Delete(1);
