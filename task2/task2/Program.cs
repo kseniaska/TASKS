@@ -15,6 +15,7 @@ namespace task2
     //    protected abstract T FromString(string line);
     //    protected abstract string ToString(T item);
 
+
     //    public void Create(T item)
     //    {
     //        using (StreamWriter sw = new StreamWriter(path, true))
