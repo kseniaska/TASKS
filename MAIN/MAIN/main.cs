@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
-namespace ConsoleApp
+namespace MAIN
 {
     public interface IPrimary
     {
@@ -88,12 +89,12 @@ namespace ConsoleApp
                 DateTime today = DateTime.Today;
                 int age = today.Year - birthDate.Year;
                 if (birthDate.Date > today.AddYears(-age))
-                {   age--;}
+                { age--; }
                 return age;
             }
         }
 
-        public Client( int id, string name, string surname, string patronymic, DateTime birthDate)
+        public Client(int id, string name, string surname, string patronymic, DateTime birthDate)
         {
             this.id = id;
             this.name = name;
@@ -162,7 +163,6 @@ namespace ConsoleApp
                 }
             }
         }
-
         public static Good[] ReadGoods()
         {
             string[] lines = File.ReadAllLines("goods.txt");
@@ -172,7 +172,7 @@ namespace ConsoleApp
             for (int i = 0; i < lines.Length; i++)
             {
                 string[] data = lines[i].Split(',');
-                goods[i] = new Good(int.Parse(data[0]), data[1],data[2]);
+                goods[i] = new Good(int.Parse(data[0]), data[1], data[2]);
             }
             return goods;
         }
@@ -186,7 +186,7 @@ namespace ConsoleApp
                 good.Print();
             }
         }
-        
+
 
         public static Client[] InitClients()
         {
@@ -222,7 +222,7 @@ namespace ConsoleApp
             {
                 string[] data = lines[i].Split(',');
 
-                clients[i] = new Client(int.Parse(data[0]), data[1], data[2], data[3],DateTime.ParseExact(data[4],"dd.MM.yyyy",null)
+                clients[i] = new Client(int.Parse(data[0]), data[1], data[2], data[3], DateTime.ParseExact(data[4], "dd.MM.yyyy", null)
                 );
             }
             return clients;
@@ -244,8 +244,8 @@ namespace ConsoleApp
             Shop[] shops = new Shop[3];
 
             shops[0] = new Shop(1, "SportMaster", "001");
-            shops[1] = new Shop(2, "Metro","002");
-            shops[2] = new Shop(3, "7Eleven","003");
+            shops[1] = new Shop(2, "Metro", "002");
+            shops[2] = new Shop(3, "7Eleven", "003");
             return shops;
         }
 
@@ -269,7 +269,7 @@ namespace ConsoleApp
             for (int i = 0; i < lines.Length; i++)
             {
                 string[] data = lines[i].Split(',');
-                shops[i] = new Shop(int.Parse(data[0]),data[1],data[2]);
+                shops[i] = new Shop(int.Parse(data[0]), data[1], data[2]);
             }
 
             return shops;
@@ -310,32 +310,32 @@ namespace ConsoleApp
             Good[] newGoods = new Good[10];
             for (int i = 0; i < newGoods.Length; i++)
             {
-                newGoods[i] = new Good(goods.Length + i + 1,"new good" + (i + 1), (goods.Length + i + 1).ToString());
+                newGoods[i] = new Good(goods.Length + i + 1, "new good" + (i + 1), (goods.Length + i + 1).ToString());
             }
             Good[] allGoods = new Good[goods.Length + newGoods.Length];
-            Array.Copy(goods,allGoods,goods.Length);
-            Array.Copy(newGoods, 0, allGoods,goods.Length,newGoods.Length);
+            Array.Copy(goods, allGoods, goods.Length);
+            Array.Copy(newGoods, 0, allGoods, goods.Length, newGoods.Length);
             goods = allGoods;
             Repository.WriteGoods(goods);
 
 
             Client[] newClients = new Client[3];
-            newClients[0] = new Client(clients.Length + 1, "Morozova", "Anastasia", "Andreevna",new DateTime(2003, 3, 12));
-            newClients[1] = new Client(clients.Length + 2, "Pavlovkiy", "Roman", "Vyacheslavovich",new DateTime(1999, 11, 29));
+            newClients[0] = new Client(clients.Length + 1, "Morozova", "Anastasia", "Andreevna", new DateTime(2003, 3, 12));
+            newClients[1] = new Client(clients.Length + 2, "Pavlovkiy", "Roman", "Vyacheslavovich", new DateTime(1999, 11, 29));
             newClients[2] = new Client(clients.Length + 3, "Ermolaeva", "Sofiya", "Pavlovna", new DateTime(2004, 7, 30));
             Client[] allClients = new Client[clients.Length + newClients.Length];
-            Array.Copy(clients,allClients, clients.Length);
-            Array.Copy(newClients,0,allClients,clients.Length,newClients.Length);
+            Array.Copy(clients, allClients, clients.Length);
+            Array.Copy(newClients, 0, allClients, clients.Length, newClients.Length);
             clients = allClients;
             Repository.WriteClients(clients);
 
 
             Shop[] newShops = new Shop[2];
-            newShops[0] = new Shop(shops.Length + 1,"Gold Apple","004");
-            newShops[1] = new Shop(shops.Length + 2,"EuroSpar","005");
+            newShops[0] = new Shop(shops.Length + 1, "Gold Apple", "004");
+            newShops[1] = new Shop(shops.Length + 2, "EuroSpar", "005");
             Shop[] allShops = new Shop[shops.Length + newShops.Length];
-            Array.Copy(shops,allShops,shops.Length);
-            Array.Copy(newShops,0,allShops,shops.Length, newShops.Length);
+            Array.Copy(shops, allShops, shops.Length);
+            Array.Copy(newShops, 0, allShops, shops.Length, newShops.Length);
             shops = allShops;
             Repository.WriteShops(shops);
 
